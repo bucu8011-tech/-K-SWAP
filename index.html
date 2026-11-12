@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K SWAP</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050b07;color:white;font-family:Arial,sans-serif;text-align:center}
+header{padding:22px;color:#00ff66;font-size:25px;font-weight:bold;letter-spacing:4px}
+.balance{color:#00ff66;font-size:34px;font-weight:bold;margin-top:25px}
+.sub{color:#8ca394;font-size:12px}
+.coin{width:210px;height:210px;border:5px solid #00ff66;border-radius:50%;margin:30px auto;background:radial-gradient(#173d24,#07120b);box-shadow:0 0 35px #00ff6655;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer}
+.coin strong{font-size:75px;color:#00ff66}
+.coin span{font-size:34px;color:#d5ff00}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px}
+button{background:#102719;border:1px solid #00ff66;color:#00ff66;border-radius:14px;padding:18px;font-size:15px;font-weight:bold}
+button:active{background:#164c29}
+.panel{display:none;margin:15px;padding:20px;background:#102017;border-radius:15px}
+input{width:100%;padding:13px;margin:10px 0;border-radius:9px;border:1px solid #00ff66;background:#07120b;color:white}
+footer{color:#668071;padding:25px;font-size:12px}
+</style>
+</head>
+<body>
+<header>K SWAP</header>
+<div class="sub">HACK THE SYSTEM • EARN • SWAP</div>
+<div class="balance" id="balance">0</div>
+<div class="sub">YOUR COINS</div>
+<div class="coin" onclick="tap()">
+<strong>K</strong><span>ϟ</span>
+</div>
+<div class="sub">TAP TO EARN</div>
+<div class="grid">
+<button onclick="show('send')">SEND COINS</button>
+<button onclick="show('swap')">SWAP</button>
+<button onclick="show('withdraw')">WITHDRAW</button>
+<button onclick="show('support')">SUPPORT</button>
+</div>
+<div id="send" class="panel">
+<h3>SEND COINS</h3>
+<input placeholder="Player ID">
+<input id="sendAmount" type="number" placeholder="Amount">
+<button onclick="alert('Demo only')">SEND</button>
+</div>
+<div id="swap" class="panel">
+<h3>SWAP COINS</h3>
+<input placeholder="Player ID">
+<input type="number" placeholder="Amount">
+<button onclick="alert('Demo only')">SWAP</button>
+</div>
+<div id="withdraw" class="panel">
+<h3>WITHDRAW</h3>
+<input placeholder="Your name">
+<input placeholder="Account or phone number">
+<input type="number" placeholder="Coin amount">
+<button onclick="alert('Demo request only. No real payment sent.')">SUBMIT REQUEST</button>
+<p>Telebirr / CBE</p>
+</div>
+<div id="support" class="panel">
+<h3>SUPPORT</h3>
+<p>Contact K SWAP Admin</p>
+</div>
+<footer>K SWAP © 2026</footer>
+<script>
+let coins=0;
+function tap(){
+coins+=1;
+document.getElementById('balance').innerText=coins.toLocaleString();
+}
+function show(id){
+document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+document.getElementById(id).style.display='block';
+}
+</script>
+</body>
+</html>
