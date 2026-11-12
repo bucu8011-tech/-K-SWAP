@@ -3,260 +3,339 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K SWAP</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 50% 30%,#173d20,#07100a 60%,#020503);color:white;font-family:Arial,sans-serif}
-.app{max-width:480px;margin:auto;padding:18px 14px 100px}
-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.brand{font-size:25px;font-weight:1000;color:#9bff60;letter-spacing:2px}
-.counters{display:flex;gap:6px}
-.counter{background:#14271a;border:1px solid #427c43;border-radius:12px;padding:8px;text-align:center;font-size:10px}
-.counter b{display:block;color:#a5ff6b;font-size:15px;margin-top:4px}
-.page{display:none}.page.active{display:block}
-h2{text-align:center;margin:24px 0 5px;font-size:19px}
-.sub{text-align:center;color:#9ab49e;font-size:12px}
-.k-area{height:300px;display:flex;align-items:center;justify-content:center}
-.k-ring{width:260px;height:260px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #65ec50;background:radial-gradient(circle,#28572c,#102417 65%,#07100a);box-shadow:0 0 22px #40ed4a,0 0 55px #1b8d32,inset 0 0 30px #3c9b43}
-.k-logo{font-size:190px;line-height:1;font-weight:1000;font-style:italic;background:linear-gradient(145deg,#fff 0%,#c9ff9a 20%,#72ef42 42%,#218a2e 70%,#d6ffb9 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-stroke:2px #8cff62;transform:perspective(400px) rotateY(-12deg);filter:drop-shadow(7px 9px 0 #14531e) drop-shadow(0 0 14px #4cff42) drop-shadow(0 0 28px #24e83b)}
-.tap{display:block;margin:0 auto 15px;border:0;border-radius:18px;padding:16px 60px;background:linear-gradient(135deg,#d0ff9b,#35d84d);color:#071009;font-size:20px;font-weight:900;box-shadow:0 0 24px #42ef50;cursor:pointer}
-.energy{background:#142219;border-radius:15px;padding:12px;margin:15px 0;border:1px solid #315b37}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#070b09;color:white;font-family:Arial,sans-serif;
+ min-height:100vh;padding-bottom:90px;
+ background-image:radial-gradient(ellipse at 50% 35%,#123321 0%,#070b09 65%);
+}
+header{padding:22px 18px 12px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:25px;font-weight:900;letter-spacing:2px;color:#a4ff42}
+.logo span{color:white}
+.profile{background:#17251b;border:1px solid #345a36;padding:9px 13px;border-radius:20px;color:#caff9b}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 17px}
+.stat{background:linear-gradient(145deg,#17251c,#0d1510);border:1px solid #294a30;border-radius:16px;padding:14px;text-align:center}
+.stat small{color:#a2b5a4;font-size:12px}
+.stat strong{display:block;font-size:22px;margin-top:6px;color:#c4ff85}
+.page{display:none;padding:14px 18px;max-width:500px;margin:auto}
+.page.active{display:block}
+.heading{text-align:center;font-size:23px;font-weight:800;margin:15px 0;color:#d5ffb1}
+.sub{text-align:center;color:#91a596;font-size:13px;margin-bottom:20px}
+.tap-area{display:flex;justify-content:center;align-items:center;margin:24px auto 18px}
+.tap-ring{
+ width:270px;height:270px;border-radius:50%;
+ display:flex;justify-content:center;align-items:center;
+ background:radial-gradient(circle,#244d2e 0%,#102718 55%,#07130b 70%);
+ border:5px solid #5dba40;
+ box-shadow:0 0 20px #48ff5260,0 0 55px #36b64b35,inset 0 0 25px #6aff4930;
+ cursor:pointer;user-select:none;touch-action:manipulation;
+ transition:transform .08s;
+}
+.tap-ring:active{transform:scale(.94)}
+.kmark{
+ font-size:155px;font-weight:1000;font-style:italic;line-height:1;
+ color:#d7ffae;
+ text-shadow:2px 2px 0 #83bd53,4px 4px 0 #528d35,
+ 6px 6px 0 #315d28,8px 8px 0 #183b20,
+ 0 0 25px #8aff50;
+ filter:drop-shadow(0 0 10px #7cff45);
+}
+.tap-hint{text-align:center;color:#b4d3b4;font-size:13px;margin-bottom:20px}
+.energy-box{background:#17251c;border:1px solid #294a30;border-radius:15px;padding:13px}
 .energy-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:9px}
-.bar{height:9px;background:#344638;border-radius:20px;overflow:hidden}
-.fill{height:100%;width:100%;background:#80ff4c;transition:width .2s}
-.actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:20px 0}
-.action{background:#14251a;border:1px solid #387744;color:#b9ffad;border-radius:12px;padding:12px 2px;font-size:10px;font-weight:bold;cursor:pointer;min-width:0}
-.action span{display:block;font-size:19px;margin-bottom:5px}
-.panel{background:#102016;border:1px solid #2c6338;border-radius:18px;padding:17px;margin-top:15px}
-.panel h3{color:#aaff83;margin:0 0 10px}
-.info{color:#b6c7b8;line-height:1.6;font-size:14px}
-.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px;background:#172b1d;border-radius:12px;margin:9px 0;font-size:13px}
-.small-btn{background:#79ed4b;color:#071009;border:0;padding:9px 14px;border-radius:9px;font-weight:bold;cursor:pointer}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#09140d;border-top:1px solid #315d38;display:flex;justify-content:space-around;padding:10px 3px;max-width:480px;margin:auto;z-index:5}
-.bottom button{background:none;border:0;color:#a9c4ac;font-size:10px;cursor:pointer;padding:5px 3px}
-.bottom button span{display:block;font-size:19px;margin-bottom:4px}
-.bottom button.selected{color:#9cff5d}
-.back{background:#24462c;color:white;border:0;border-radius:10px;padding:10px 16px;margin:15px 0;cursor:pointer}
-.notice{background:#172b1d;border:1px solid #376b3d;border-radius:12px;padding:12px;color:#b8d9b9;font-size:12px;line-height:1.5}
-input,textarea{width:100%;padding:12px;margin:8px 0;background:#09150d;color:white;border:1px solid #44764a;border-radius:9px}
+.energy-bar{height:10px;background:#071109;border-radius:20px;overflow:hidden}
+.energy-fill{height:100%;width:100%;background:linear-gradient(90deg,#62d837,#c4ff67);transition:width .2s}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.quick button,.action,.nav button{
+ border:1px solid #31563a;background:#142219;color:white;
+ border-radius:13px;padding:13px 7px;font-weight:700;cursor:pointer;
+}
+.quick button:active,.action:active{transform:scale(.96)}
+.quick span{display:block;font-size:21px;margin-bottom:5px}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.menu-card{background:#142219;border:1px solid #31563a;border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer}
+.menu-card b{display:block;margin-top:9px}
+.menu-card span{font-size:28px}
+.panel{background:#142219;border:1px solid #31563a;border-radius:17px;padding:18px;margin:12px 0}
+.panel h3{color:#caff9b;margin-bottom:12px}
+.panel p{color:#c3d0c4;font-size:14px;line-height:1.8}
+.action{width:100%;margin-top:12px;background:#79d83e;color:#071108;border:0;font-size:15px}
+input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border:1px solid #3b6041;background:#09120c;color:white;font-size:15px}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:#0b120d;border-top:1px solid #294a30;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 5px max(10px,env(safe-area-inset-bottom));z-index:5}
+.nav button{background:transparent;border:0;padding:7px 2px;color:#9eafa0;font-size:11px}
+.nav button.active{color:#caff8a}
+.nav span{display:block;font-size:20px;margin-bottom:4px}
+.notice{font-size:12px;color:#9eafa0;text-align:center;line-height:1.6;margin-top:15px}
+.back{background:transparent;border:0;color:#caff9b;font-size:14px;margin:5px 0 12px;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="app">
 
 <header>
- <div class="brand">K SWAP</div>
- <div class="counters">
-  <div class="counter">🪙 COINS<b id="coins">0</b></div>
-  <div class="counter">💎 DIAMONDS<b id="diamonds">0</b></div>
- </div>
+ <div class="logo">K <span>SWAP</span></div>
+ <div class="profile">👤 Player</div>
 </header>
 
-<section id="home" class="page active">
- <h2>WELCOME TO K SWAP</h2>
- <div class="sub">TAP • EARN • UPGRADE</div>
- <div class="k-area"><div class="k-ring"><div class="k-logo">K</div></div></div>
- <button class="tap" onclick="tapCoin()">TAP +50 COINS</button>
- <div class="energy">
-  <div class="energy-top"><b>⚡ ENERGY</b><span id="energyText">1000 / 1000</span></div>
-  <div class="bar"><div class="fill" id="energyBar"></div></div>
- </div>
- <div class="actions">
-  <button class="action" onclick="showPage('withdraw')"><span>💸</span>Withdraw</button>
-  <button class="action" onclick="showPage('swap')"><span>🔄</span>Swap</button>
-  <button class="action" onclick="showPage('support')"><span>🎧</span>Support</button>
-  <button class="action" onclick="showPage('rank')"><span>🏆</span>Rank</button>
-  <button class="action" onclick="showPage('send')"><span>📤</span>Send</button>
- </div>
- <div class="panel">
-  <h3>⚡ Daily Activity</h3>
-  <div class="info">Tap the K button to collect coins and explore the game.</div>
- </div>
-</section>
-
-<section id="withdraw" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>💸 Withdraw</h3>
-  <p class="info">Demo page: this feature displays game points only. No real money or payments are transferred.</p>
-  <div class="item">Your coins <b id="withdrawCoins">0</b></div>
-  <div class="item">Your diamonds <b id="withdrawDiamonds">0</b></div>
-  <div class="notice">Withdraw is currently a demonstration feature.</div>
- </div>
-</section>
-
-<section id="swap" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>🔄 Swap</h3>
-  <p class="info">Demo conversion between game points. No real currency exchange.</p>
-  <div class="item">1000 Coins <b>→ 1 Demo Diamond</b></div>
-  <button class="small-btn" onclick="swapCoins()">Swap 1000 Coins</button>
-  <p class="info" id="swapMessage"></p>
- </div>
-</section>
-
-<section id="support" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>🎧 Support Center</h3>
-  <p class="info">Need help? Write your problem below.</p>
-  <textarea id="supportMessage" rows="4" placeholder="Describe your problem..."></textarea>
-  <button class="small-btn" onclick="sendSupport()">Send Message</button>
-  <p class="info" id="supportResult"></p>
- </div>
-</section>
-
-<section id="rank" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>🏆 Leaderboard</h3>
-  <div class="item">🥇 Player 1 <b>100,000</b></div>
-  <div class="item">🥈 Player 2 <b>75,000</b></div>
-  <div class="item">🥉 Player 3 <b>50,000</b></div>
-  <div class="item">Your score <b id="rankCoins">0</b></div>
-  <p class="info">Sample leaderboard for demonstration.</p>
- </div>
-</section>
-
-<section id="send" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>📤 Send</h3>
-  <p class="info">Demo-only game point transfer screen. No real transfers are made.</p>
-  <input id="sendName" placeholder="Player name">
-  <input id="sendAmount" type="number" placeholder="Coin amount">
-  <button class="small-btn" onclick="sendCoins()">Send Demo Coins</button>
-  <p class="info" id="sendResult"></p>
- </div>
-</section>
-
-<section id="stats" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>📊 Statistics</h3>
-  <div class="item">Total Coins <b id="statsCoins">0</b></div>
-  <div class="item">Diamonds <b id="statsDiamonds">0</b></div>
-  <div class="item">Tap Power <b>50</b></div>
- </div>
-</section>
-
-<section id="daily" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>🎁 Daily Bonus</h3>
-  <p class="info">Collect your daily demo reward.</p>
-  <button class="small-btn" id="dailyButton" onclick="dailyBonus()">Claim +500 Coins</button>
-  <p class="info" id="dailyResult"></p>
- </div>
-</section>
-
-<section id="rewards" class="page">
- <button class="back" onclick="showPage('home')">← Back</button>
- <div class="panel">
-  <h3>🎉 Rewards</h3>
-  <div class="item">Tap reward <b>+50 Coins</b></div>
-  <div class="item">Daily bonus <b>+500 Coins</b></div>
-  <div class="item">Game achievement <b>Coming Soon</b></div>
- </div>
-</section>
-
+<div class="stats">
+ <div class="stat"><small>🪙 COINS</small><strong id="coins">0</strong></div>
+ <div class="stat"><small>💎 DIAMONDS</small><strong id="diamonds">0</strong></div>
 </div>
 
-<nav class="bottom">
- <button class="selected" onclick="showPage('home',this)"><span>🏠</span>Home</button>
- <button onclick="showPage('stats',this)"><span>📊</span>Stats</button>
- <button onclick="showPage('daily',this)"><span>🎁</span>Daily</button>
- <button onclick="showPage('rewards',this)"><span>🎉</span>Rewards</button>
+<!-- HOME -->
+<section class="page active" id="home">
+ <h2 class="heading">TAP TO EARN</h2>
+ <p class="sub">Tap the K and collect your coins</p>
+
+ <div class="tap-area">
+  <div class="tap-ring" id="tapButton">
+   <div class="kmark">K</div>
+  </div>
+ </div>
+ <p class="tap-hint">TAP THE K TO COLLECT +1 COIN</p>
+
+ <div class="energy-box">
+  <div class="energy-top">
+   <b>⚡ Energy</b>
+   <b><span id="energy">1000</span> / 1000</b>
+  </div>
+  <div class="energy-bar"><div class="energy-fill" id="energyFill"></div></div>
+ </div>
+
+ <div class="quick">
+  <button onclick="openPage('daily')"><span>🎁</span>Daily Bonus</button>
+  <button onclick="openPage('rewards')"><span>🏆</span>Rewards</button>
+  <button onclick="openPage('rank')"><span>👑</span>Rank</button>
+  <button onclick="openPage('withdraw')"><span>💵</span>Withdraw</button>
+  <button onclick="openPage('swap')"><span>💎</span>Swap</button>
+  <button onclick="openPage('support')"><span>🎧</span>Support</button>
+ </div>
+</section>
+
+<!-- STATS -->
+<section class="page" id="stats">
+ <h2 class="heading">YOUR STATS</h2>
+ <div class="panel">
+  <h3>📊 Game Statistics</h3>
+  <p>Total Coins: <b id="totalCoins">0</b></p>
+  <p>Diamonds: <b id="totalDiamonds">0</b></p>
+  <p>Total Taps: <b id="totalTaps">0</b></p>
+  <p>Current Energy: <b id="statEnergy">1000</b></p>
+ </div>
+</section>
+
+<!-- DAILY BONUS -->
+<section class="page" id="daily">
+ <h2 class="heading">DAILY BONUS</h2>
+ <p class="sub">Come back every day for your reward</p>
+ <div class="panel" style="text-align:center">
+  <div style="font-size:55px">🎁</div>
+  <h3>Daily Gift</h3>
+  <p>Collect your daily 500 coins.</p>
+  <button class="action" id="dailyButton" onclick="claimDaily()">CLAIM 500 COINS</button>
+  <p id="dailyMessage" class="notice"></p>
+ </div>
+</section>
+
+<!-- REWARDS -->
+<section class="page" id="rewards">
+ <h2 class="heading">REWARDS</h2>
+ <div class="panel">
+  <h3>🎯 Coin Collector</h3>
+  <p>Collect 1,000 coins to reach your first milestone.</p>
+  <p id="rewardProgress">0 / 1000 Coins</p>
+  <div class="energy-bar"><div class="energy-fill" id="rewardFill" style="width:0%"></div></div>
+ </div>
+ <div class="panel">
+  <h3>💎 Diamond Collector</h3>
+  <p>Collect diamonds through the Swap section.</p>
+ </div>
+</section>
+
+<!-- WITHDRAW -->
+<section class="page" id="withdraw">
+ <h2 class="heading">WITHDRAW</h2>
+ <div class="panel">
+  <h3>💵 Balance</h3>
+  <p>Coins: <b id="withdrawCoins">0</b></p>
+  <p>Diamonds: <b id="withdrawDiamonds">0</b></p>
+  <p>100 Diamonds = $1</p>
+  <p class="notice">ይህ የጨዋታ ሂሳብ ማሳያ ነው። እውነተኛ ገንዘብ ማውጣት አይከናወንም።</p>
+ </div>
+</section>
+
+<!-- SWAP -->
+<section class="page" id="swap">
+ <h2 class="heading">COIN SWAP</h2>
+ <div class="panel">
+  <h3>💎 Exchange Rate</h3>
+  <p>40,000 Coins = 100 Diamonds</p>
+  <p>100 Diamonds = $1</p>
+  <p>80,000 Coins = 200 Diamonds</p>
+  <p>400,000 Coins = 1,000 Diamonds</p>
+  <button class="action" onclick="swapCoins()">SWAP 40,000 COINS</button>
+  <p class="notice" id="swapMessage">Swap uses in-game points only. No cash payment is made.</p>
+ </div>
+</section>
+
+<!-- SUPPORT -->
+<section class="page" id="support">
+ <h2 class="heading">SUPPORT</h2>
+ <div class="panel">
+  <h3>🎧 Contact Support</h3>
+  <p>Write your problem below.</p>
+  <textarea id="supportText" rows="4" placeholder="Write your message..."></textarea>
+  <button class="action" onclick="sendSupport()">SUBMIT MESSAGE</button>
+  <p id="supportMessage" class="notice"></p>
+ </div>
+</section>
+
+<!-- RANK -->
+<section class="page" id="rank">
+ <h2 class="heading">LEADERBOARD</h2>
+ <div class="panel">
+  <h3>👑 Your Rank</h3>
+  <p>🥇 1. K SWAP Player — 100,000 Coins</p>
+  <p>🥈 2. Player Two — 75,000 Coins</p>
+  <p>🥉 3. Player Three — 50,000 Coins</p>
+  <p>⭐ You — <b id="rankCoins">0</b> Coins</p>
+  <p class="notice">Sample leaderboard. Online rankings need a backend.</p>
+ </div>
+</section>
+
+<!-- SEND -->
+<section class="page" id="send">
+ <h2 class="heading">SEND</h2>
+ <div class="panel">
+  <h3>📤 Send Points</h3>
+  <p>Player name</p>
+  <input id="sendName" placeholder="Enter player name">
+  <p style="margin-top:12px">Coin amount</p>
+  <input id="sendAmount" type="number" placeholder="Enter amount">
+  <button class="action" onclick="sendCoins()">SEND</button>
+  <p id="sendMessage" class="notice"></p>
+  <p class="notice">This is a local game preview. It does not transfer real money or points to another player.</p>
+ </div>
+</section>
+
+<nav class="nav">
+ <button class="active" data-page="home" onclick="openPage('home')"><span>🏠</span>Home</button>
+ <button data-page="stats" onclick="openPage('stats')"><span>📊</span>Stats</button>
+ <button data-page="daily" onclick="openPage('daily')"><span>🎁</span>Daily</button>
+ <button data-page="rewards" onclick="openPage('rewards')"><span>🏆</span>Rewards</button>
 </nav>
 
 <script>
-let coins=0;
-let diamonds=0;
-let energy=1000;
-let claimed=false;
+let coins = Number(localStorage.getItem("ks_coins")) || 0;
+let diamonds = Number(localStorage.getItem("ks_diamonds")) || 0;
+let energy = Number(localStorage.getItem("ks_energy"));
+if (!Number.isFinite(energy)) energy = 1000;
+let totalTaps = Number(localStorage.getItem("ks_taps")) || 0;
+let lastDaily = localStorage.getItem("ks_daily") || "";
+
+function save(){
+ localStorage.setItem("ks_coins",coins);
+ localStorage.setItem("ks_diamonds",diamonds);
+ localStorage.setItem("ks_energy",energy);
+ localStorage.setItem("ks_taps",totalTaps);
+}
 
 function update(){
  document.getElementById("coins").textContent=coins.toLocaleString();
  document.getElementById("diamonds").textContent=diamonds.toLocaleString();
- document.getElementById("energyText").textContent=energy+" / 1000";
- document.getElementById("energyBar").style.width=(energy/10)+"%";
+ document.getElementById("energy").textContent=energy;
+ document.getElementById("energyFill").style.width=(energy/10)+"%";
+ document.getElementById("totalCoins").textContent=coins.toLocaleString();
+ document.getElementById("totalDiamonds").textContent=diamonds.toLocaleString();
+ document.getElementById("totalTaps").textContent=totalTaps.toLocaleString();
+ document.getElementById("statEnergy").textContent=energy;
  document.getElementById("withdrawCoins").textContent=coins.toLocaleString();
- document.getElementById("withdrawDiamonds").textContent=diamonds;
- document.getElementById("statsCoins").textContent=coins.toLocaleString();
- document.getElementById("statsDiamonds").textContent=diamonds;
+ document.getElementById("withdrawDiamonds").textContent=diamonds.toLocaleString();
  document.getElementById("rankCoins").textContent=coins.toLocaleString();
+ document.getElementById("rewardProgress").textContent=Math.min(coins,1000)+" / 1000 Coins";
+ document.getElementById("rewardFill").style.width=Math.min(coins/10,100)+"%";
+ save();
 }
 
-function tapCoin(){
- if(energy<50){alert("Not enough energy!");return;}
- coins+=50;
- energy-=50;
+document.getElementById("tapButton").addEventListener("click",function(){
+ if(energy<=0){
+  alert("Energy is empty! Wait for it to refill.");
+  return;
+ }
+ coins += 1;
+ energy -= 1;
+ totalTaps += 1;
+ update();
+});
+
+function openPage(name){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(name).classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>{
+  b.classList.toggle("active",b.dataset.page===name);
+ });
+ window.scrollTo({top:0,behavior:"smooth"});
+ update();
+}
+
+function claimDaily(){
+ const today=new Date().toDateString();
+ if(lastDaily===today){
+  document.getElementById("dailyMessage").textContent="You already claimed today's bonus.";
+  return;
+ }
+ coins+=500;
+ lastDaily=today;
+ localStorage.setItem("ks_daily",today);
+ document.getElementById("dailyMessage").textContent="500 coins added to your balance!";
+ document.getElementById("dailyButton").textContent="CLAIMED";
  update();
 }
 
 function swapCoins(){
- if(coins<1000){
-  document.getElementById("swapMessage").textContent="You need 1000 coins.";
+ if(coins<40000){
+  document.getElementById("swapMessage").textContent="You need 40,000 coins to swap.";
   return;
  }
- coins-=1000;
- diamonds+=1;
+ coins-=40000;
+ diamonds+=100;
+ document.getElementById("swapMessage").textContent="100 diamonds added to your game balance!";
  update();
- document.getElementById("swapMessage").textContent="1 demo diamond added!";
 }
 
-function showPage(id,button){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("selected"));
- if(button)button.classList.add("selected");
-}
-
-function dailyBonus(){
- if(claimed){
-  document.getElementById("dailyResult").textContent="Already claimed in this session.";
+function sendSupport(){
+ const msg=document.getElementById("supportText").value.trim();
+ if(!msg){
+  document.getElementById("supportMessage").textContent="Please write a message first.";
   return;
  }
- coins+=500;
- claimed=true;
- document.getElementById("dailyButton").disabled=true;
- document.getElementById("dailyResult").textContent="500 demo coins added!";
- update();
+ document.getElementById("supportMessage").textContent="Message saved in this preview only. Online support needs a backend.";
+ document.getElementById("supportText").value="";
 }
 
 function sendCoins(){
  const name=document.getElementById("sendName").value.trim();
  const amount=Number(document.getElementById("sendAmount").value);
- const result=document.getElementById("sendResult");
- if(!name||!Number.isInteger(amount)||amount<=0){
-  result.textContent="Enter a player name and valid coin amount.";
+ if(!name||!Number.isFinite(amount)||amount<=0){
+  document.getElementById("sendMessage").textContent="Enter a player name and a valid amount.";
   return;
  }
- if(amount>coins){
-  result.textContent="Not enough coins.";
-  return;
- }
- coins-=amount;
- update();
- result.textContent="Demo transfer recorded for "+name+".";
-}
-
-function sendSupport(){
- const message=document.getElementById("supportMessage").value.trim();
- document.getElementById("supportResult").textContent=
- message ? "Message saved in this demo screen. Connect a backend to deliver it to support." : "Please write your message first.";
+ document.getElementById("sendMessage").textContent="Player transfer is not enabled in this preview.";
 }
 
 setInterval(()=>{
  if(energy<1000){
-  energy=Math.min(1000,energy+10);
+  energy=Math.min(1000,energy+1);
   update();
  }
 },3000);
 
 update();
+if(lastDaily===new Date().toDateString()){
+ document.getElementById("dailyButton").textContent="CLAIMED";
+}
 </script>
 </body>
 </html>
