@@ -3,75 +3,163 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K SWAP</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#050b07;color:white;font-family:Arial,sans-serif;text-align:center}
-header{padding:22px;color:#00ff66;font-size:25px;font-weight:bold;letter-spacing:4px}
-.balance{color:#00ff66;font-size:34px;font-weight:bold;margin-top:25px}
-.sub{color:#8ca394;font-size:12px}
-.coin{width:210px;height:210px;border:5px solid #00ff66;border-radius:50%;margin:30px auto;background:radial-gradient(#173d24,#07120b);box-shadow:0 0 35px #00ff6655;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer}
-.coin strong{font-size:75px;color:#00ff66}
-.coin span{font-size:34px;color:#d5ff00}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px}
-button{background:#102719;border:1px solid #00ff66;color:#00ff66;border-radius:14px;padding:18px;font-size:15px;font-weight:bold}
-button:active{background:#164c29}
-.panel{display:none;margin:15px;padding:20px;background:#102017;border-radius:15px}
-input{width:100%;padding:13px;margin:10px 0;border-radius:9px;border:1px solid #00ff66;background:#07120b;color:white}
-footer{color:#668071;padding:25px;font-size:12px}
+body{
+ margin:0;background:radial-gradient(circle at top,#18351c,#050806 55%,#000);
+ color:white;font-family:Arial,sans-serif;min-height:100vh;
+}
+.app{max-width:480px;margin:auto;padding:18px 15px 35px}
+header{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:27px;font-weight:900;color:#b5ff38;text-shadow:0 0 18px #69ff00}
+.small{color:#9ab49a;font-size:11px}
+button{
+ border:1px solid #75ff37;background:#142819;color:#c6ff9e;
+ border-radius:13px;padding:12px;font-weight:bold;cursor:pointer;
+ box-shadow:0 0 12px #39ff0025;
+}
+h1{text-align:center;color:#b7ff44;font-size:30px;margin:25px 0 3px;
+ text-shadow:0 0 20px #69ff00}
+.subtitle{text-align:center;color:#8da58d;font-size:12px}
+.balances{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.panel{
+ background:linear-gradient(145deg,#1c3020,#080d09);
+ border:1px solid #3f8c36;border-radius:18px;padding:16px;
+ box-shadow:inset 0 0 20px #70ff0010,0 8px 20px #000;
+}
+.panel span{font-size:12px;color:#9db39b}
+.amount{font-size:24px;font-weight:900;margin-top:8px}
+.coin{color:#baff37}.diamond{color:#54e9ff}
+.hero{text-align:center;padding:15px 0 20px}
+.medallion{
+ width:190px;height:190px;margin:10px auto 20px;border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ background:radial-gradient(circle at 35% 25%,#baff72,#276b16 35%,#071308 70%);
+ border:7px solid #8bff39;
+ box-shadow:0 0 20px #6cff50,0 0 55px #36ff3866,
+ inset 0 0 30px #d4ffb0;
+ transform:perspective(500px) rotateX(8deg);
+}
+.medallion strong{font-size:100px;color:#061006;
+ text-shadow:3px 4px 0 #baff64,0 0 20px #fff}
+.tap{width:85%;padding:18px;font-size:19px;border-radius:18px;
+ background:linear-gradient(145deg,#baff49,#3b9b18);color:#071006;
+ box-shadow:0 7px 0 #205b10,0 0 25px #7cff45}
+.tap:active{transform:translateY(5px);box-shadow:0 2px 0 #205b10}
+.info{color:#9eb49b;font-size:12px;margin-top:13px}
+.section-title{color:#baff50;font-size:15px;margin:22px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.card{
+ background:linear-gradient(145deg,#18251a,#090d0a);
+ border:1px solid #315a2c;border-radius:15px;padding:15px 8px;
+ text-align:center;min-height:83px;
+}
+.card b{display:block;margin-bottom:7px;color:#c5ff9c}
+.card small{color:#8ba28b}
+.price{font-size:13px;color:#55eaff;margin-top:8px}
+footer{text-align:center;color:#658065;font-size:11px;margin:25px 0}
+#message{color:#baff50;text-align:center;min-height:20px;font-size:12px}
 </style>
 </head>
 <body>
-<header>K SWAP</header>
-<div class="sub">HACK THE SYSTEM • EARN • SWAP</div>
-<div class="balance" id="balance">0</div>
-<div class="sub">YOUR COINS</div>
-<div class="coin" onclick="tap()">
-<strong>K</strong><span>ϟ</span>
+<div class="app">
+<header>
+ <div class="logo">⚡ K SWAP</div>
+ <button onclick="daily()">DAILY BONUS</button>
+</header>
+
+<h1>K SWAP</h1>
+<div class="subtitle">TAP • EARN • PLAY</div>
+
+<div class="balances">
+ <div class="panel">
+  <span>🪙 YOUR COINS</span>
+  <div class="amount coin" id="coins">0</div>
+ </div>
+ <div class="panel">
+  <span>💎 YOUR DIAMONDS</span>
+  <div class="amount diamond" id="diamonds">100</div>
+ </div>
 </div>
-<div class="sub">TAP TO EARN</div>
+
+<div class="hero">
+ <div class="medallion"><strong>K</strong></div>
+ <button class="tap" onclick="tapCoin()">⚡ TAP +50 COINS</button>
+ <div class="info">Tap the K to collect virtual coins</div>
+</div>
+
+<div id="message"></div>
+
+<div class="section-title">💎 DIAMOND PRICE LIST</div>
 <div class="grid">
-<button onclick="show('send')">SEND COINS</button>
-<button onclick="show('swap')">SWAP</button>
-<button onclick="show('withdraw')">WITHDRAW</button>
-<button onclick="show('support')">SUPPORT</button>
+ <div class="card"><b>💎 100 Diamonds</b><small>Demo price</small><div class="price">$2</div></div>
+ <div class="card"><b>💎 500 Diamonds</b><small>Demo price</small><div class="price">$10</div></div>
+ <div class="card"><b>💎 1,000 Diamonds</b><small>Demo price</small><div class="price">$20</div></div>
+ <div class="card"><b>💎 5,000 Diamonds</b><small>Demo price</small><div class="price">$100</div></div>
 </div>
-<div id="send" class="panel">
-<h3>SEND COINS</h3>
-<input placeholder="Player ID">
-<input id="sendAmount" type="number" placeholder="Amount">
-<button onclick="alert('Demo only')">SEND</button>
+
+<div class="section-title">🚀 GAME MENU</div>
+<div class="grid">
+ <div class="card" onclick="demo('SEND')"><b>📤 SEND</b><small>Demo feature</small></div>
+ <div class="card" onclick="demo('SWAP')"><b>🔄 SWAP</b><small>Demo feature</small></div>
+ <div class="card" onclick="upgrade()"><b>⚡ UPGRADES</b><small>Upgrade tap power</small></div>
+ <div class="card" onclick="demo('FRIENDS')"><b>👥 FRIENDS</b><small>Invite friends</small></div>
+ <div class="card" onclick="demo('LEADERBOARD')"><b>🏆 LEADERBOARD</b><small>Top players</small></div>
+ <div class="card" onclick="demo('SUPPORT')"><b>🎧 SUPPORT</b><small>Help center</small></div>
 </div>
-<div id="swap" class="panel">
-<h3>SWAP COINS</h3>
-<input placeholder="Player ID">
-<input type="number" placeholder="Amount">
-<button onclick="alert('Demo only')">SWAP</button>
+
+<footer>K SWAP • 3D CYBER GAME<br>Virtual game balances only</footer>
 </div>
-<div id="withdraw" class="panel">
-<h3>WITHDRAW</h3>
-<input placeholder="Your name">
-<input placeholder="Account or phone number">
-<input type="number" placeholder="Coin amount">
-<button onclick="alert('Demo request only. No real payment sent.')">SUBMIT REQUEST</button>
-<p>Telebirr / CBE</p>
-</div>
-<div id="support" class="panel">
-<h3>SUPPORT</h3>
-<p>Contact K SWAP Admin</p>
-</div>
-<footer>K SWAP © 2026</footer>
+
 <script>
-let coins=0;
-function tap(){
-coins+=1;
-document.getElementById('balance').innerText=coins.toLocaleString();
+let coins = Number(localStorage.getItem("ks_coins") || 0);
+let diamonds = Number(localStorage.getItem("ks_diamonds") || 100);
+let power = Number(localStorage.getItem("ks_power") || 50);
+
+function save(){
+ localStorage.setItem("ks_coins",coins);
+ localStorage.setItem("ks_diamonds",diamonds);
+ localStorage.setItem("ks_power",power);
+ show();
 }
-function show(id){
-document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
-document.getElementById(id).style.display='block';
+function show(){
+ document.getElementById("coins").textContent=coins.toLocaleString();
+ document.getElementById("diamonds").textContent=diamonds.toLocaleString();
+ document.querySelector(".tap").textContent="⚡ TAP +"+power+" COINS";
 }
+function tapCoin(){
+ coins+=power;
+ save();
+ document.getElementById("message").textContent="+"+power+" coins collected!";
+}
+function daily(){
+ let today=new Date().toDateString();
+ if(localStorage.getItem("ks_daily")===today){
+  document.getElementById("message").textContent="Daily bonus already collected!";
+  return;
+ }
+ coins+=500;
+ localStorage.setItem("ks_daily",today);
+ save();
+ document.getElementById("message").textContent="Daily bonus: +500 coins!";
+}
+function upgrade(){
+ if(coins<1000){
+  document.getElementById("message").textContent="You need 1,000 coins to upgrade.";
+  return;
+ }
+ coins-=1000;
+ power+=10;
+ save();
+ document.getElementById("message").textContent="Upgrade complete! Tap power increased.";
+}
+function demo(name){
+ document.getElementById("message").textContent=
+ name+" is a demo feature. Online connection is not enabled yet.";
+}
+show();
 </script>
 </body>
 </html>
