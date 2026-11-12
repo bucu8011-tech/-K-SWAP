@@ -3,163 +3,260 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>K SWAP</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:radial-gradient(circle at top,#18351c,#050806 55%,#000);
- color:white;font-family:Arial,sans-serif;min-height:100vh;
-}
-.app{max-width:480px;margin:auto;padding:18px 15px 35px}
-header{display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:27px;font-weight:900;color:#b5ff38;text-shadow:0 0 18px #69ff00}
-.small{color:#9ab49a;font-size:11px}
-button{
- border:1px solid #75ff37;background:#142819;color:#c6ff9e;
- border-radius:13px;padding:12px;font-weight:bold;cursor:pointer;
- box-shadow:0 0 12px #39ff0025;
-}
-h1{text-align:center;color:#b7ff44;font-size:30px;margin:25px 0 3px;
- text-shadow:0 0 20px #69ff00}
-.subtitle{text-align:center;color:#8da58d;font-size:12px}
-.balances{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
-.panel{
- background:linear-gradient(145deg,#1c3020,#080d09);
- border:1px solid #3f8c36;border-radius:18px;padding:16px;
- box-shadow:inset 0 0 20px #70ff0010,0 8px 20px #000;
-}
-.panel span{font-size:12px;color:#9db39b}
-.amount{font-size:24px;font-weight:900;margin-top:8px}
-.coin{color:#baff37}.diamond{color:#54e9ff}
-.hero{text-align:center;padding:15px 0 20px}
-.medallion{
- width:190px;height:190px;margin:10px auto 20px;border-radius:50%;
- display:flex;align-items:center;justify-content:center;
- background:radial-gradient(circle at 35% 25%,#baff72,#276b16 35%,#071308 70%);
- border:7px solid #8bff39;
- box-shadow:0 0 20px #6cff50,0 0 55px #36ff3866,
- inset 0 0 30px #d4ffb0;
- transform:perspective(500px) rotateX(8deg);
-}
-.medallion strong{font-size:100px;color:#061006;
- text-shadow:3px 4px 0 #baff64,0 0 20px #fff}
-.tap{width:85%;padding:18px;font-size:19px;border-radius:18px;
- background:linear-gradient(145deg,#baff49,#3b9b18);color:#071006;
- box-shadow:0 7px 0 #205b10,0 0 25px #7cff45}
-.tap:active{transform:translateY(5px);box-shadow:0 2px 0 #205b10}
-.info{color:#9eb49b;font-size:12px;margin-top:13px}
-.section-title{color:#baff50;font-size:15px;margin:22px 0 10px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{
- background:linear-gradient(145deg,#18251a,#090d0a);
- border:1px solid #315a2c;border-radius:15px;padding:15px 8px;
- text-align:center;min-height:83px;
-}
-.card b{display:block;margin-bottom:7px;color:#c5ff9c}
-.card small{color:#8ba28b}
-.price{font-size:13px;color:#55eaff;margin-top:8px}
-footer{text-align:center;color:#658065;font-size:11px;margin:25px 0}
-#message{color:#baff50;text-align:center;min-height:20px;font-size:12px}
+body{margin:0;background:radial-gradient(circle at 50% 30%,#173d20,#07100a 60%,#020503);color:white;font-family:Arial,sans-serif}
+.app{max-width:480px;margin:auto;padding:18px 14px 100px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-size:25px;font-weight:1000;color:#9bff60;letter-spacing:2px}
+.counters{display:flex;gap:6px}
+.counter{background:#14271a;border:1px solid #427c43;border-radius:12px;padding:8px;text-align:center;font-size:10px}
+.counter b{display:block;color:#a5ff6b;font-size:15px;margin-top:4px}
+.page{display:none}.page.active{display:block}
+h2{text-align:center;margin:24px 0 5px;font-size:19px}
+.sub{text-align:center;color:#9ab49e;font-size:12px}
+.k-area{height:300px;display:flex;align-items:center;justify-content:center}
+.k-ring{width:260px;height:260px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #65ec50;background:radial-gradient(circle,#28572c,#102417 65%,#07100a);box-shadow:0 0 22px #40ed4a,0 0 55px #1b8d32,inset 0 0 30px #3c9b43}
+.k-logo{font-size:190px;line-height:1;font-weight:1000;font-style:italic;background:linear-gradient(145deg,#fff 0%,#c9ff9a 20%,#72ef42 42%,#218a2e 70%,#d6ffb9 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-stroke:2px #8cff62;transform:perspective(400px) rotateY(-12deg);filter:drop-shadow(7px 9px 0 #14531e) drop-shadow(0 0 14px #4cff42) drop-shadow(0 0 28px #24e83b)}
+.tap{display:block;margin:0 auto 15px;border:0;border-radius:18px;padding:16px 60px;background:linear-gradient(135deg,#d0ff9b,#35d84d);color:#071009;font-size:20px;font-weight:900;box-shadow:0 0 24px #42ef50;cursor:pointer}
+.energy{background:#142219;border-radius:15px;padding:12px;margin:15px 0;border:1px solid #315b37}
+.energy-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:9px}
+.bar{height:9px;background:#344638;border-radius:20px;overflow:hidden}
+.fill{height:100%;width:100%;background:#80ff4c;transition:width .2s}
+.actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:20px 0}
+.action{background:#14251a;border:1px solid #387744;color:#b9ffad;border-radius:12px;padding:12px 2px;font-size:10px;font-weight:bold;cursor:pointer;min-width:0}
+.action span{display:block;font-size:19px;margin-bottom:5px}
+.panel{background:#102016;border:1px solid #2c6338;border-radius:18px;padding:17px;margin-top:15px}
+.panel h3{color:#aaff83;margin:0 0 10px}
+.info{color:#b6c7b8;line-height:1.6;font-size:14px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px;background:#172b1d;border-radius:12px;margin:9px 0;font-size:13px}
+.small-btn{background:#79ed4b;color:#071009;border:0;padding:9px 14px;border-radius:9px;font-weight:bold;cursor:pointer}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#09140d;border-top:1px solid #315d38;display:flex;justify-content:space-around;padding:10px 3px;max-width:480px;margin:auto;z-index:5}
+.bottom button{background:none;border:0;color:#a9c4ac;font-size:10px;cursor:pointer;padding:5px 3px}
+.bottom button span{display:block;font-size:19px;margin-bottom:4px}
+.bottom button.selected{color:#9cff5d}
+.back{background:#24462c;color:white;border:0;border-radius:10px;padding:10px 16px;margin:15px 0;cursor:pointer}
+.notice{background:#172b1d;border:1px solid #376b3d;border-radius:12px;padding:12px;color:#b8d9b9;font-size:12px;line-height:1.5}
+input,textarea{width:100%;padding:12px;margin:8px 0;background:#09150d;color:white;border:1px solid #44764a;border-radius:9px}
 </style>
 </head>
 <body>
 <div class="app">
+
 <header>
- <div class="logo">⚡ K SWAP</div>
- <button onclick="daily()">DAILY BONUS</button>
+ <div class="brand">K SWAP</div>
+ <div class="counters">
+  <div class="counter">🪙 COINS<b id="coins">0</b></div>
+  <div class="counter">💎 DIAMONDS<b id="diamonds">0</b></div>
+ </div>
 </header>
 
-<h1>K SWAP</h1>
-<div class="subtitle">TAP • EARN • PLAY</div>
-
-<div class="balances">
- <div class="panel">
-  <span>🪙 YOUR COINS</span>
-  <div class="amount coin" id="coins">0</div>
+<section id="home" class="page active">
+ <h2>WELCOME TO K SWAP</h2>
+ <div class="sub">TAP • EARN • UPGRADE</div>
+ <div class="k-area"><div class="k-ring"><div class="k-logo">K</div></div></div>
+ <button class="tap" onclick="tapCoin()">TAP +50 COINS</button>
+ <div class="energy">
+  <div class="energy-top"><b>⚡ ENERGY</b><span id="energyText">1000 / 1000</span></div>
+  <div class="bar"><div class="fill" id="energyBar"></div></div>
+ </div>
+ <div class="actions">
+  <button class="action" onclick="showPage('withdraw')"><span>💸</span>Withdraw</button>
+  <button class="action" onclick="showPage('swap')"><span>🔄</span>Swap</button>
+  <button class="action" onclick="showPage('support')"><span>🎧</span>Support</button>
+  <button class="action" onclick="showPage('rank')"><span>🏆</span>Rank</button>
+  <button class="action" onclick="showPage('send')"><span>📤</span>Send</button>
  </div>
  <div class="panel">
-  <span>💎 YOUR DIAMONDS</span>
-  <div class="amount diamond" id="diamonds">100</div>
+  <h3>⚡ Daily Activity</h3>
+  <div class="info">Tap the K button to collect coins and explore the game.</div>
  </div>
+</section>
+
+<section id="withdraw" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>💸 Withdraw</h3>
+  <p class="info">Demo page: this feature displays game points only. No real money or payments are transferred.</p>
+  <div class="item">Your coins <b id="withdrawCoins">0</b></div>
+  <div class="item">Your diamonds <b id="withdrawDiamonds">0</b></div>
+  <div class="notice">Withdraw is currently a demonstration feature.</div>
+ </div>
+</section>
+
+<section id="swap" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>🔄 Swap</h3>
+  <p class="info">Demo conversion between game points. No real currency exchange.</p>
+  <div class="item">1000 Coins <b>→ 1 Demo Diamond</b></div>
+  <button class="small-btn" onclick="swapCoins()">Swap 1000 Coins</button>
+  <p class="info" id="swapMessage"></p>
+ </div>
+</section>
+
+<section id="support" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>🎧 Support Center</h3>
+  <p class="info">Need help? Write your problem below.</p>
+  <textarea id="supportMessage" rows="4" placeholder="Describe your problem..."></textarea>
+  <button class="small-btn" onclick="sendSupport()">Send Message</button>
+  <p class="info" id="supportResult"></p>
+ </div>
+</section>
+
+<section id="rank" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>🏆 Leaderboard</h3>
+  <div class="item">🥇 Player 1 <b>100,000</b></div>
+  <div class="item">🥈 Player 2 <b>75,000</b></div>
+  <div class="item">🥉 Player 3 <b>50,000</b></div>
+  <div class="item">Your score <b id="rankCoins">0</b></div>
+  <p class="info">Sample leaderboard for demonstration.</p>
+ </div>
+</section>
+
+<section id="send" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>📤 Send</h3>
+  <p class="info">Demo-only game point transfer screen. No real transfers are made.</p>
+  <input id="sendName" placeholder="Player name">
+  <input id="sendAmount" type="number" placeholder="Coin amount">
+  <button class="small-btn" onclick="sendCoins()">Send Demo Coins</button>
+  <p class="info" id="sendResult"></p>
+ </div>
+</section>
+
+<section id="stats" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>📊 Statistics</h3>
+  <div class="item">Total Coins <b id="statsCoins">0</b></div>
+  <div class="item">Diamonds <b id="statsDiamonds">0</b></div>
+  <div class="item">Tap Power <b>50</b></div>
+ </div>
+</section>
+
+<section id="daily" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>🎁 Daily Bonus</h3>
+  <p class="info">Collect your daily demo reward.</p>
+  <button class="small-btn" id="dailyButton" onclick="dailyBonus()">Claim +500 Coins</button>
+  <p class="info" id="dailyResult"></p>
+ </div>
+</section>
+
+<section id="rewards" class="page">
+ <button class="back" onclick="showPage('home')">← Back</button>
+ <div class="panel">
+  <h3>🎉 Rewards</h3>
+  <div class="item">Tap reward <b>+50 Coins</b></div>
+  <div class="item">Daily bonus <b>+500 Coins</b></div>
+  <div class="item">Game achievement <b>Coming Soon</b></div>
+ </div>
+</section>
+
 </div>
 
-<div class="hero">
- <div class="medallion"><strong>K</strong></div>
- <button class="tap" onclick="tapCoin()">⚡ TAP +50 COINS</button>
- <div class="info">Tap the K to collect virtual coins</div>
-</div>
-
-<div id="message"></div>
-
-<div class="section-title">💎 DIAMOND PRICE LIST</div>
-<div class="grid">
- <div class="card"><b>💎 100 Diamonds</b><small>Demo price</small><div class="price">$2</div></div>
- <div class="card"><b>💎 500 Diamonds</b><small>Demo price</small><div class="price">$10</div></div>
- <div class="card"><b>💎 1,000 Diamonds</b><small>Demo price</small><div class="price">$20</div></div>
- <div class="card"><b>💎 5,000 Diamonds</b><small>Demo price</small><div class="price">$100</div></div>
-</div>
-
-<div class="section-title">🚀 GAME MENU</div>
-<div class="grid">
- <div class="card" onclick="demo('SEND')"><b>📤 SEND</b><small>Demo feature</small></div>
- <div class="card" onclick="demo('SWAP')"><b>🔄 SWAP</b><small>Demo feature</small></div>
- <div class="card" onclick="upgrade()"><b>⚡ UPGRADES</b><small>Upgrade tap power</small></div>
- <div class="card" onclick="demo('FRIENDS')"><b>👥 FRIENDS</b><small>Invite friends</small></div>
- <div class="card" onclick="demo('LEADERBOARD')"><b>🏆 LEADERBOARD</b><small>Top players</small></div>
- <div class="card" onclick="demo('SUPPORT')"><b>🎧 SUPPORT</b><small>Help center</small></div>
-</div>
-
-<footer>K SWAP • 3D CYBER GAME<br>Virtual game balances only</footer>
-</div>
+<nav class="bottom">
+ <button class="selected" onclick="showPage('home',this)"><span>🏠</span>Home</button>
+ <button onclick="showPage('stats',this)"><span>📊</span>Stats</button>
+ <button onclick="showPage('daily',this)"><span>🎁</span>Daily</button>
+ <button onclick="showPage('rewards',this)"><span>🎉</span>Rewards</button>
+</nav>
 
 <script>
-let coins = Number(localStorage.getItem("ks_coins") || 0);
-let diamonds = Number(localStorage.getItem("ks_diamonds") || 100);
-let power = Number(localStorage.getItem("ks_power") || 50);
+let coins=0;
+let diamonds=0;
+let energy=1000;
+let claimed=false;
 
-function save(){
- localStorage.setItem("ks_coins",coins);
- localStorage.setItem("ks_diamonds",diamonds);
- localStorage.setItem("ks_power",power);
- show();
-}
-function show(){
+function update(){
  document.getElementById("coins").textContent=coins.toLocaleString();
  document.getElementById("diamonds").textContent=diamonds.toLocaleString();
- document.querySelector(".tap").textContent="⚡ TAP +"+power+" COINS";
+ document.getElementById("energyText").textContent=energy+" / 1000";
+ document.getElementById("energyBar").style.width=(energy/10)+"%";
+ document.getElementById("withdrawCoins").textContent=coins.toLocaleString();
+ document.getElementById("withdrawDiamonds").textContent=diamonds;
+ document.getElementById("statsCoins").textContent=coins.toLocaleString();
+ document.getElementById("statsDiamonds").textContent=diamonds;
+ document.getElementById("rankCoins").textContent=coins.toLocaleString();
 }
+
 function tapCoin(){
- coins+=power;
- save();
- document.getElementById("message").textContent="+"+power+" coins collected!";
+ if(energy<50){alert("Not enough energy!");return;}
+ coins+=50;
+ energy-=50;
+ update();
 }
-function daily(){
- let today=new Date().toDateString();
- if(localStorage.getItem("ks_daily")===today){
-  document.getElementById("message").textContent="Daily bonus already collected!";
-  return;
- }
- coins+=500;
- localStorage.setItem("ks_daily",today);
- save();
- document.getElementById("message").textContent="Daily bonus: +500 coins!";
-}
-function upgrade(){
+
+function swapCoins(){
  if(coins<1000){
-  document.getElementById("message").textContent="You need 1,000 coins to upgrade.";
+  document.getElementById("swapMessage").textContent="You need 1000 coins.";
   return;
  }
  coins-=1000;
- power+=10;
- save();
- document.getElementById("message").textContent="Upgrade complete! Tap power increased.";
+ diamonds+=1;
+ update();
+ document.getElementById("swapMessage").textContent="1 demo diamond added!";
 }
-function demo(name){
- document.getElementById("message").textContent=
- name+" is a demo feature. Online connection is not enabled yet.";
+
+function showPage(id,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("selected"));
+ if(button)button.classList.add("selected");
 }
-show();
+
+function dailyBonus(){
+ if(claimed){
+  document.getElementById("dailyResult").textContent="Already claimed in this session.";
+  return;
+ }
+ coins+=500;
+ claimed=true;
+ document.getElementById("dailyButton").disabled=true;
+ document.getElementById("dailyResult").textContent="500 demo coins added!";
+ update();
+}
+
+function sendCoins(){
+ const name=document.getElementById("sendName").value.trim();
+ const amount=Number(document.getElementById("sendAmount").value);
+ const result=document.getElementById("sendResult");
+ if(!name||!Number.isInteger(amount)||amount<=0){
+  result.textContent="Enter a player name and valid coin amount.";
+  return;
+ }
+ if(amount>coins){
+  result.textContent="Not enough coins.";
+  return;
+ }
+ coins-=amount;
+ update();
+ result.textContent="Demo transfer recorded for "+name+".";
+}
+
+function sendSupport(){
+ const message=document.getElementById("supportMessage").value.trim();
+ document.getElementById("supportResult").textContent=
+ message ? "Message saved in this demo screen. Connect a backend to deliver it to support." : "Please write your message first.";
+}
+
+setInterval(()=>{
+ if(energy<1000){
+  energy=Math.min(1000,energy+10);
+  update();
+ }
+},3000);
+
+update();
 </script>
 </body>
 </html>
