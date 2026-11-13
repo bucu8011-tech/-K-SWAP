@@ -57,8 +57,33 @@ def get_player():
             "INSERT OR IGNORE INTO players (player_id) VALUES (?)",
             (player_id,)
         )
+
+        if "coins" in data or "energy" in data:
+            try:
+                coins = int(data.get("coins", 0))
+                energy = int(data.get("energy", 1000))
+
+                if coins < 0 or energy < 0 or energy > 1000:
+                    return jsonify({"error": "Invalid game values"}), 400
+
+            except (ValueError, TypeError):
+                return jsonify({"error": "Invalid game values"}), 400
+
+            conn.execute(
+                """
+                UPDATE players
+                SET coins = ?, energy = ?
+                WHERE player_id = ?
+                """,
+                (coins, energy, player_id)
+            )
+
         player = conn.execute(
-            "SELECT player_id, coins, energy FROM players WHERE player_id = ?",
+            """
+            SELECT player_id, coins, energy
+            FROM players
+            WHERE player_id = ?
+            """,
             (player_id,)
         ).fetchone()
 
