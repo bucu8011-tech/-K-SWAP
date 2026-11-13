@@ -7,7 +7,7 @@
 <title>K SWAP</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:radial-gradient(ellipse at 50% 30%,#153c25,#070b09 70%);color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding-bottom:85px}
 header{display:flex;justify-content:space-between;align-items:center;padding:20px}
 .logo{font-size:26px;font-weight:900;letter-spacing:2px;color:#a4ff42}
@@ -22,7 +22,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:20p
 .heading{text-align:center;font-size:24px;margin:15px 0;color:#d5ffb1}
 .sub{text-align:center;color:#91a596;font-size:13px;margin-bottom:20px}
 .tap-area{display:flex;justify-content:center;margin:25px auto 18px}
-.tap-ring{position:relative;width:270px;height:270px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle,#244d2e,#102718 55%,#07130b 70%);border:5px solid #5dba40;box-shadow:0 0 25px #48ff5260,0 0 60px #36b64b35,inset 0 0 25px #6aff4930;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .08s}
+.tap-ring{position:relative;width:270px;height:270px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle,#244d2e,#102718 55%,#07130b 70%);border:5px solid #5dba40;box-shadow:0 0 25px #48ff5260,0 0 60px #36b64b35,inset 0 0 25px #6aff4930;cursor:pointer;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .08s}
 .tap-ring:active{transform:scale(.94)}
 .tap-ring.pulse{animation:pulse .16s ease-out}
 @keyframes pulse{0%{transform:scale(.93)}100%{transform:scale(1)}}
@@ -44,7 +44,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:20p
 textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border:1px solid #3b6041;background:#09120c;color:white;font-size:15px}
 .notice{font-size:12px;color:#9eafa0;text-align:center;line-height:1.6;margin-top:14px}
 .nav{position:fixed;bottom:0;left:0;width:100%;background:#0b120d;border-top:1px solid #294a30;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 5px max(10px,env(safe-area-inset-bottom));z-index:5}
-.nav button{background:transparent;border:0;color:#9eafa0;padding:7px 2px;font-size:11px}
+.nav button{background:transparent;border:0;color:#9eafa0;padding:7px 2px;font-size:11px;-webkit-tap-highlight-color:transparent}
 .nav button.active{color:#caff8a}
 .nav span{display:block;font-size:20px;margin-bottom:4px}
 .id-box{background:#0a160e;border:1px dashed #5dba40;border-radius:12px;padding:14px;text-align:center;margin:12px 0}
@@ -54,7 +54,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
-
 <header>
  <div class="logo">K <span>SWAP</span></div>
  <div class="player" id="playerStatus">CONNECTING</div>
