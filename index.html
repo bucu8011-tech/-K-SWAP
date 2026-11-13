@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K SWAP</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-button,.tap-button,#tapButton{-webkit-tap-highlight-color:transparent;outline:none}
 body{background:radial-gradient(ellipse at 50% 30%,#153c25,#070b09 70%);color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding-bottom:85px}
 header{display:flex;justify-content:space-between;align-items:center;padding:20px}
 .logo{font-size:26px;font-weight:900;letter-spacing:2px;color:#a4ff42}
@@ -33,7 +33,6 @@ header{display:flex;justify-content:space-between;align-items:center;padding:20p
 .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
 .quick button,.action{border:1px solid #31563a;background:#142219;color:white;border-radius:13px;padding:14px 5px;font-weight:700;cursor:pointer}
 .quick button span{display:block;font-size:22px;margin-bottom:6px}
-.quick button:active,.action:active{transform:scale(.96)}
 .panel{background:#142219;border:1px solid #31563a;border-radius:17px;padding:18px;margin:12px 0}
 .panel h3{color:#caff9b;margin-bottom:12px}
 .panel p{color:#c3d0c4;font-size:14px;line-height:1.8}
@@ -46,14 +45,18 @@ input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border
 .nav span{display:block;font-size:20px;margin-bottom:4px}
 .id-box{background:#0a160e;border:1px dashed #5dba40;border-radius:12px;padding:14px;text-align:center;margin:12px 0}
 .id-box strong{display:block;color:#caff85;font-size:20px;margin-top:6px;letter-spacing:2px}
+#connection{text-align:center;padding:10px;color:#caff85;font-size:12px}
+button:disabled{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
 
 <header>
  <div class="logo">K <span>SWAP</span></div>
- <div class="player">PLAYER</div>
+ <div class="player" id="playerStatus">CONNECTING</div>
 </header>
+
+<div id="connection">Connecting to Telegram...</div>
 
 <div class="stats">
  <div class="stat"><small>COINS</small><strong id="coins">0</strong></div>
@@ -68,10 +71,7 @@ input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border
  </div>
  <p class="tap-hint">TAP THE K TO COLLECT +1 COIN</p>
  <div class="energy-box">
-  <div class="energy-top">
-   <b>ENERGY</b>
-   <b><span id="energy">1000</span> / 1000</b>
-  </div>
+  <div class="energy-top"><b>ENERGY</b><b><span id="energy">1000</span> / 1000</b></div>
   <div class="energy-bar"><div class="energy-fill" id="energyFill" style="width:100%"></div></div>
  </div>
  <div class="quick">
@@ -126,7 +126,7 @@ input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border
 <section class="page" id="withdraw">
  <h2 class="heading">WITHDRAW</h2>
  <div class="panel">
-  <p style="text-align:center">For game-point questions, please contact Support. K-SWAP points are not cash.</p>
+  <p style="text-align:center">K-SWAP points are game points only and have no cash value.</p>
  </div>
 </section>
 
@@ -162,7 +162,7 @@ input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border
 </section>
 
 <section class="page" id="send">
- <h2 class="heading">SEND COINS</h2>
+ <h2 class="heading">PLAYER ACCOUNT</h2>
  <div class="panel">
   <h3>Your Player ID</h3>
   <div class="id-box">
@@ -170,15 +170,7 @@ input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border
    <strong id="playerId">Loading...</strong>
   </div>
   <button class="action" onclick="copyPlayerId()">COPY MY ID</button>
- </div>
- <div class="panel">
-  <h3>Send Coins to a Player</h3>
-  <p>Receiver Player ID</p>
-  <input id="receiverId" placeholder="Enter receiver Player ID">
-  <p style="margin-top:12px">Coin Amount</p>
-  <input id="sendAmount" type="number" min="1" placeholder="Enter coin amount">
-  <button class="action" onclick="sendCoins()">CONTINUE</button>
-  <p id="sendMessage" class="notice">Transfers are not active yet.</p>
+  <p class="notice">Your account is connected through Telegram.</p>
  </div>
 </section>
 
@@ -190,62 +182,117 @@ input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border
 </nav>
 
 <script>
-const getNumber=(key,initial=0)=>{
- const stored=localStorage.getItem(key);
- if(stored===null)return initial;
- const value=Number(stored);
- return Number.isFinite(value)?value:initial;
-};
+const API = "https://k-swap-stil.onrender.com";
+const tg = window.Telegram && window.Telegram.WebApp;
+let initData = "";
+let playerId = "";
+let coins = 0;
+let diamonds = Number(localStorage.getItem("ks_diamonds") || 0);
+let energy = 1000;
+let totalTaps = Number(localStorage.getItem("ks_taps") || 0);
+let lastDaily = localStorage.getItem("ks_daily") || "";
+let serverReady = false;
+let syncTimer = null;
 
-let coins=getNumber("ks_coins");
-let diamonds=getNumber("ks_diamonds");
-let energy=Math.min(1000,getNumber("ks_energy",1000));
-let totalTaps=getNumber("ks_taps");
-let lastDaily=localStorage.getItem("ks_daily")||"";
-
-let playerId=localStorage.getItem("ks_player_id");
-if(!playerId){
- playerId="K"+Math.random().toString(36).slice(2,10).toUpperCase();
- localStorage.setItem("ks_player_id",playerId);
+function showStatus(message, ok=false) {
+ document.getElementById("connection").textContent = message;
+ document.getElementById("playerStatus").textContent = ok ? "CONNECTED" : "OFFLINE";
 }
-window.playerId=playerId;
-document.getElementById("playerId").textContent=playerId;
 
-function save(){
- localStorage.setItem("ks_coins",coins);
+function update() {
+ document.getElementById("coins").textContent = coins.toLocaleString();
+ document.getElementById("diamonds").textContent = diamonds.toLocaleString();
+ document.getElementById("energy").textContent = energy;
+ document.getElementById("energyFill").style.width = (energy/10)+"%";
+ document.getElementById("totalCoins").textContent = coins.toLocaleString();
+ document.getElementById("totalDiamonds").textContent = diamonds.toLocaleString();
+ document.getElementById("totalTaps").textContent = totalTaps.toLocaleString();
+ document.getElementById("statEnergy").textContent = energy;
+ document.getElementById("rankCoins").textContent = coins.toLocaleString();
+ document.getElementById("rewardProgress").textContent = Math.min(coins,1000)+" / 1000 Coins";
+ document.getElementById("rewardFill").style.width = Math.min(coins/10,100)+"%";
  localStorage.setItem("ks_diamonds",diamonds);
- localStorage.setItem("ks_energy",energy);
  localStorage.setItem("ks_taps",totalTaps);
 }
 
-function update(){
- document.getElementById("coins").textContent=coins.toLocaleString();
- document.getElementById("diamonds").textContent=diamonds.toLocaleString();
- document.getElementById("energy").textContent=energy;
- document.getElementById("energyFill").style.width=(energy/10)+"%";
- document.getElementById("totalCoins").textContent=coins.toLocaleString();
- document.getElementById("totalDiamonds").textContent=diamonds.toLocaleString();
- document.getElementById("totalTaps").textContent=totalTaps.toLocaleString();
- document.getElementById("statEnergy").textContent=energy;
- document.getElementById("rankCoins").textContent=coins.toLocaleString();
- document.getElementById("rewardProgress").textContent=Math.min(coins,1000)+" / 1000 Coins";
- document.getElementById("rewardFill").style.width=Math.min(coins/10,100)+"%";
- save();
- window.dispatchEvent(new Event("kswap:statechange"));
+async function api(path, options={}) {
+ const response = await fetch(API + path, {
+  ...options,
+  headers: {
+   "Content-Type":"application/json",
+   "X-Telegram-Init-Data":initData,
+   ...(options.headers || {})
+  }
+ });
+ const data = await response.json();
+ if (!response.ok) throw new Error(data.error || "Server error " + response.status);
+ return data;
+}
+
+async function connectAccount() {
+ if (!tg || !tg.initData) {
+  showStatus("Please open this game using the Telegram bot.",false);
+  document.getElementById("tapButton").style.pointerEvents="none";
+  return;
+ }
+
+ tg.ready();
+ tg.expand();
+ initData = tg.initData;
+
+ try {
+  const player = await api("/auth", {
+   method:"POST",
+   body:JSON.stringify({init_data:initData})
+  });
+
+  playerId = player.player_id;
+  coins = Number(player.coins);
+  energy = Number(player.energy);
+
+  document.getElementById("playerId").textContent = playerId;
+  serverReady = true;
+  update();
+  showStatus("Telegram account connected successfully.",true);
+ } catch(error) {
+  showStatus("Connection failed: " + error.message,false);
+  document.getElementById("tapButton").style.pointerEvents="none";
+ }
+}
+
+async function savePlayer() {
+ if (!serverReady) return;
+ await api("/player", {
+  method:"POST",
+  body:JSON.stringify({coins:coins,energy:energy})
+ });
+}
+
+function scheduleSave() {
+ if (!serverReady) return;
+ clearTimeout(syncTimer);
+ syncTimer = setTimeout(() => {
+  savePlayer().catch(error => {
+   showStatus("Save failed. Check connection.",false);
+   console.error(error);
+  });
+ },700);
 }
 
 document.getElementById("tapButton").addEventListener("click",()=>{
- if(energy<=0){
+ if (!serverReady) return;
+ if (energy <= 0) {
   alert("Energy is empty. Wait for it to refill.");
   return;
  }
- coins+=1;
- energy-=1;
- totalTaps+=1;
+ coins++;
+ energy--;
+ totalTaps++;
  update();
+ scheduleSave();
 });
 
-function openPage(name){
+function openPage(name) {
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById(name).classList.add("active");
  document.querySelectorAll(".nav button").forEach(b=>{
@@ -255,165 +302,64 @@ function openPage(name){
  update();
 }
 
-function claimDaily(){
- const today=new Date().toDateString();
- if(lastDaily===today){
+function claimDaily() {
+ if (!serverReady) return;
+ const today = new Date().toDateString();
+ if (lastDaily === today) {
   document.getElementById("dailyMessage").textContent="You already claimed today's bonus.";
   return;
  }
- coins+=500;
- lastDaily=today;
+ coins += 500;
+ lastDaily = today;
  localStorage.setItem("ks_daily",today);
  document.getElementById("dailyMessage").textContent="500 coins added to your balance!";
  document.getElementById("dailyButton").textContent="CLAIMED";
  update();
+ scheduleSave();
 }
 
-function swapCoins(){
- if(coins<40000){
+function swapCoins() {
+ if (!serverReady) return;
+ if (coins < 40000) {
   document.getElementById("swapMessage").textContent="You need 40,000 coins to swap.";
   return;
  }
- coins-=40000;
- diamonds+=100;
- document.getElementById("swapMessage").textContent="100 diamonds added to your game balance!";
+ coins -= 40000;
+ diamonds += 100;
+ document.getElementById("swapMessage").textContent="100 game diamonds added!";
  update();
+ scheduleSave();
 }
 
-function sendSupport(){
- const message=document.getElementById("supportText").value.trim();
- if(!message){
-  document.getElementById("supportMessage").textContent="Please write a message first.";
-  return;
- }
- document.getElementById("supportMessage").textContent="Support submission is not connected yet.";
- document.getElementById("supportText").value="";
+function sendSupport() {
+ const message = document.getElementById("supportText").value.trim();
+ document.getElementById("supportMessage").textContent = message
+  ? "Support messaging is not connected yet."
+  : "Please write a message first.";
 }
 
-function copyPlayerId(){
- if(navigator.clipboard&&navigator.clipboard.writeText){
+function copyPlayerId() {
+ if (!playerId) return;
+ if (navigator.clipboard && navigator.clipboard.writeText) {
   navigator.clipboard.writeText(playerId).then(()=>{
-   document.getElementById("sendMessage").textContent="Your Player ID has been copied.";
-  }).catch(()=>{
-   document.getElementById("sendMessage").textContent="Please copy your Player ID: "+playerId;
+   document.getElementById("supportMessage").textContent="Player ID copied.";
   });
- }else{
-  document.getElementById("sendMessage").textContent="Your Player ID: "+playerId;
  }
-}
-
-function sendCoins(){
- const receiver=document.getElementById("receiverId").value.trim();
- const amount=Number(document.getElementById("sendAmount").value);
- const message=document.getElementById("sendMessage");
-
- if(!receiver){
-  message.textContent="Please enter the receiver Player ID.";
-  return;
- }
- if(receiver===playerId){
-  message.textContent="You cannot send coins to yourself.";
-  return;
- }
- if(!Number.isSafeInteger(amount)||amount<=0){
-  message.textContent="Please enter a valid whole number of coins.";
-  return;
- }
- if(amount>coins){
-  message.textContent="You do not have enough coins.";
-  return;
- }
- message.textContent="Transfers are not active yet. A secure backend is required.";
 }
 
 setInterval(()=>{
- if(energy<1000){
-  energy=Math.min(1000,energy+1);
+ if (serverReady && energy < 1000) {
+  energy = Math.min(1000,energy+1);
   update();
+  scheduleSave();
  }
 },3000);
 
-update();
-
-if(lastDaily===new Date().toDateString()){
+if (lastDaily === new Date().toDateString()) {
  document.getElementById("dailyButton").textContent="CLAIMED";
 }
+
+connectAccount();
 </script>
-
-<script>
-let syncTimer=null;
-let serverReady=false;
-
-async function savePlayerToServer(){
- const response=await fetch(
-  "https://k-swap-stil.onrender.com/player",
-  {
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({
-    player_id:window.playerId,
-    coins:coins,
-    energy:energy
-   })
-  }
- );
-
- if(!response.ok){
-  throw new Error("Save failed: "+response.status);
- }
-
- return await response.json();
-}
-
-async function syncPlayerWithServer(){
- try{
-  const url=
-   "https://k-swap-stil.onrender.com/player?player_id="+
-   encodeURIComponent(window.playerId);
-
-  const response=await fetch(url);
-
-  if(response.ok){
-   const player=await response.json();
-
-   coins=Number(player.coins);
-   energy=Number(player.energy);
-
-   if(!Number.isFinite(coins)||!Number.isFinite(energy)){
-    throw new Error("Invalid player data from server");
-   }
-
-   localStorage.setItem("ks_coins",coins);
-   localStorage.setItem("ks_energy",energy);
-
-   update();
-   console.log("Loaded from server:",player);
-  }else if(response.status===404){
-   await savePlayerToServer();
-  }else{
-   throw new Error("Server error: "+response.status);
-  }
-
-  serverReady=true;
- }catch(error){
-  console.error("Server loading failed:",error);
- }
-}
-
-window.addEventListener("kswap:statechange",()=>{
- if(!serverReady)return;
-
- clearTimeout(syncTimer);
-
- syncTimer=setTimeout(()=>{
-  savePlayerToServer().catch(error=>{
-   console.error("Server save failed:",error);
-  });
- },700);
-});
-
-syncPlayerWithServer();
-</script>
-
 </body>
 </html>
