@@ -22,9 +22,13 @@ header{display:flex;justify-content:space-between;align-items:center;padding:20p
 .heading{text-align:center;font-size:24px;margin:15px 0;color:#d5ffb1}
 .sub{text-align:center;color:#91a596;font-size:13px;margin-bottom:20px}
 .tap-area{display:flex;justify-content:center;margin:25px auto 18px}
-.tap-ring{width:270px;height:270px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle,#244d2e,#102718 55%,#07130b 70%);border:5px solid #5dba40;box-shadow:0 0 25px #48ff5260,0 0 60px #36b64b35,inset 0 0 25px #6aff4930;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .08s}
+.tap-ring{position:relative;width:270px;height:270px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle,#244d2e,#102718 55%,#07130b 70%);border:5px solid #5dba40;box-shadow:0 0 25px #48ff5260,0 0 60px #36b64b35,inset 0 0 25px #6aff4930;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .08s}
 .tap-ring:active{transform:scale(.94)}
-.kmark{font-size:155px;font-weight:1000;font-style:italic;color:#d7ffae;text-shadow:2px 2px #83bd53,4px 4px #528d35,6px 6px #315d28,8px 8px #183b20,0 0 25px #8aff50}
+.tap-ring.pulse{animation:pulse .16s ease-out}
+@keyframes pulse{0%{transform:scale(.93)}100%{transform:scale(1)}}
+.kmark{font-size:155px;font-weight:1000;font-style:italic;color:#d7ffae;text-shadow:2px 2px #83bd53,4px 4px #528d35,6px 6px #315d28,8px 8px #183b20,0 0 25px #8aff50;pointer-events:none}
+.float-coin{position:absolute;color:#d7ffae;font-size:24px;font-weight:bold;pointer-events:none;animation:floatUp .7s ease-out forwards;text-shadow:0 0 10px #8aff50}
+@keyframes floatUp{to{opacity:0;transform:translateY(-85px) scale(1.3)}}
 .tap-hint{text-align:center;color:#b4d3b4;font-size:13px;margin-bottom:20px}
 .energy-box{background:#17251c;border:1px solid #294a30;border-radius:15px;padding:14px}
 .energy-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:9px}
@@ -37,7 +41,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:20p
 .panel h3{color:#caff9b;margin-bottom:12px}
 .panel p{color:#c3d0c4;font-size:14px;line-height:1.8}
 .action{width:100%;margin-top:14px;background:#79d83e;color:#071108;border:0;font-size:15px}
-input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border:1px solid #3b6041;background:#09120c;color:white;font-size:15px}
+textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border:1px solid #3b6041;background:#09120c;color:white;font-size:15px}
 .notice{font-size:12px;color:#9eafa0;text-align:center;line-height:1.6;margin-top:14px}
 .nav{position:fixed;bottom:0;left:0;width:100%;background:#0b120d;border-top:1px solid #294a30;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 5px max(10px,env(safe-area-inset-bottom));z-index:5}
 .nav button{background:transparent;border:0;color:#9eafa0;padding:7px 2px;font-size:11px}
@@ -194,105 +198,112 @@ let lastDaily = localStorage.getItem("ks_daily") || "";
 let serverReady = false;
 let syncTimer = null;
 
-function showStatus(message, ok=false) {
- document.getElementById("connection").textContent = message;
- document.getElementById("playerStatus").textContent = ok ? "CONNECTED" : "OFFLINE";
+function showStatus(message,ok=false){
+ document.getElementById("connection").textContent=message;
+ document.getElementById("playerStatus").textContent=ok?"CONNECTED":"OFFLINE";
 }
 
-function update() {
- document.getElementById("coins").textContent = coins.toLocaleString();
- document.getElementById("diamonds").textContent = diamonds.toLocaleString();
- document.getElementById("energy").textContent = energy;
- document.getElementById("energyFill").style.width = (energy/10)+"%";
- document.getElementById("totalCoins").textContent = coins.toLocaleString();
- document.getElementById("totalDiamonds").textContent = diamonds.toLocaleString();
- document.getElementById("totalTaps").textContent = totalTaps.toLocaleString();
- document.getElementById("statEnergy").textContent = energy;
- document.getElementById("rankCoins").textContent = coins.toLocaleString();
- document.getElementById("rewardProgress").textContent = Math.min(coins,1000)+" / 1000 Coins";
- document.getElementById("rewardFill").style.width = Math.min(coins/10,100)+"%";
+function update(){
+ document.getElementById("coins").textContent=coins.toLocaleString();
+ document.getElementById("diamonds").textContent=diamonds.toLocaleString();
+ document.getElementById("energy").textContent=energy;
+ document.getElementById("energyFill").style.width=(energy/10)+"%";
+ document.getElementById("totalCoins").textContent=coins.toLocaleString();
+ document.getElementById("totalDiamonds").textContent=diamonds.toLocaleString();
+ document.getElementById("totalTaps").textContent=totalTaps.toLocaleString();
+ document.getElementById("statEnergy").textContent=energy;
+ document.getElementById("rankCoins").textContent=coins.toLocaleString();
+ document.getElementById("rewardProgress").textContent=Math.min(coins,1000)+" / 1000 Coins";
+ document.getElementById("rewardFill").style.width=Math.min(coins/10,100)+"%";
  localStorage.setItem("ks_diamonds",diamonds);
  localStorage.setItem("ks_taps",totalTaps);
 }
 
-async function api(path, options={}) {
- const response = await fetch(API + path, {
+async function api(path,options={}){
+ const response=await fetch(API+path,{
   ...options,
-  headers: {
+  headers:{
    "Content-Type":"application/json",
    "X-Telegram-Init-Data":initData,
-   ...(options.headers || {})
+   ...(options.headers||{})
   }
  });
- const data = await response.json();
- if (!response.ok) throw new Error(data.error || "Server error " + response.status);
+ const data=await response.json();
+ if(!response.ok) throw new Error(data.error||"Server error "+response.status);
  return data;
 }
 
-async function connectAccount() {
- if (!tg || !tg.initData) {
+async function connectAccount(){
+ if(!tg||!tg.initData){
   showStatus("Please open this game using the Telegram bot.",false);
   document.getElementById("tapButton").style.pointerEvents="none";
   return;
  }
-
  tg.ready();
  tg.expand();
- initData = tg.initData;
-
- try {
-  const player = await api("/auth", {
+ initData=tg.initData;
+ try{
+  const player=await api("/auth",{
    method:"POST",
    body:JSON.stringify({init_data:initData})
   });
-
-  playerId = player.player_id;
-  coins = Number(player.coins);
-  energy = Number(player.energy);
-
-  document.getElementById("playerId").textContent = playerId;
-  serverReady = true;
+  playerId=player.player_id;
+  coins=Number(player.coins);
+  energy=Number(player.energy);
+  document.getElementById("playerId").textContent=playerId;
+  serverReady=true;
   update();
   showStatus("Telegram account connected successfully.",true);
- } catch(error) {
-  showStatus("Connection failed: " + error.message,false);
+ }catch(error){
+  showStatus("Connection failed: "+error.message,false);
   document.getElementById("tapButton").style.pointerEvents="none";
  }
 }
 
-async function savePlayer() {
- if (!serverReady) return;
- await api("/player", {
+async function savePlayer(){
+ if(!serverReady)return;
+ await api("/player",{
   method:"POST",
   body:JSON.stringify({coins:coins,energy:energy})
  });
 }
 
-function scheduleSave() {
- if (!serverReady) return;
+function scheduleSave(){
+ if(!serverReady)return;
  clearTimeout(syncTimer);
- syncTimer = setTimeout(() => {
-  savePlayer().catch(error => {
+ syncTimer=setTimeout(()=>{
+  savePlayer().catch(error=>{
    showStatus("Save failed. Check connection.",false);
    console.error(error);
   });
  },700);
 }
 
-document.getElementById("tapButton").addEventListener("click",()=>{
- if (!serverReady) return;
- if (energy <= 0) {
-  alert("Energy is empty. Wait for it to refill.");
-  return;
- }
+document.getElementById("tapButton").addEventListener("click",event=>{
+ if(!serverReady||energy<=0)return;
  coins++;
  energy--;
  totalTaps++;
+
+ const ring=document.getElementById("tapButton");
+ ring.classList.remove("pulse");
+ void ring.offsetWidth;
+ ring.classList.add("pulse");
+
+ const popup=document.createElement("div");
+ popup.className="float-coin";
+ popup.textContent="+1";
+ const rect=ring.getBoundingClientRect();
+ popup.style.left=(event.clientX-rect.left-10)+"px";
+ popup.style.top=(event.clientY-rect.top-15)+"px";
+ ring.appendChild(popup);
+ setTimeout(()=>popup.remove(),700);
+
  update();
  scheduleSave();
 });
 
-function openPage(name) {
+function openPage(name){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById(name).classList.add("active");
  document.querySelectorAll(".nav button").forEach(b=>{
@@ -302,15 +313,15 @@ function openPage(name) {
  update();
 }
 
-function claimDaily() {
- if (!serverReady) return;
- const today = new Date().toDateString();
- if (lastDaily === today) {
+function claimDaily(){
+ if(!serverReady)return;
+ const today=new Date().toDateString();
+ if(lastDaily===today){
   document.getElementById("dailyMessage").textContent="You already claimed today's bonus.";
   return;
  }
- coins += 500;
- lastDaily = today;
+ coins+=500;
+ lastDaily=today;
  localStorage.setItem("ks_daily",today);
  document.getElementById("dailyMessage").textContent="500 coins added to your balance!";
  document.getElementById("dailyButton").textContent="CLAIMED";
@@ -318,44 +329,46 @@ function claimDaily() {
  scheduleSave();
 }
 
-function swapCoins() {
- if (!serverReady) return;
- if (coins < 40000) {
+function swapCoins(){
+ if(!serverReady)return;
+ if(coins<40000){
   document.getElementById("swapMessage").textContent="You need 40,000 coins to swap.";
   return;
  }
- coins -= 40000;
- diamonds += 100;
+ coins-=40000;
+ diamonds+=100;
  document.getElementById("swapMessage").textContent="100 game diamonds added!";
  update();
  scheduleSave();
 }
 
-function sendSupport() {
- const message = document.getElementById("supportText").value.trim();
- document.getElementById("supportMessage").textContent = message
-  ? "Support messaging is not connected yet."
-  : "Please write a message first.";
+function sendSupport(){
+ const message=document.getElementById("supportText").value.trim();
+ document.getElementById("supportMessage").textContent=message
+  ?"Support messaging is not connected yet."
+  :"Please write a message first.";
 }
 
-function copyPlayerId() {
- if (!playerId) return;
- if (navigator.clipboard && navigator.clipboard.writeText) {
+function copyPlayerId(){
+ if(!playerId)return;
+ if(navigator.clipboard&&navigator.clipboard.writeText){
   navigator.clipboard.writeText(playerId).then(()=>{
    document.getElementById("supportMessage").textContent="Player ID copied.";
+  }).catch(()=>{
+   document.getElementById("supportMessage").textContent="Copy is not available.";
   });
  }
 }
 
 setInterval(()=>{
- if (serverReady && energy < 1000) {
-  energy = Math.min(1000,energy+1);
+ if(serverReady&&energy<1000){
+  energy=Math.min(1000,energy+10);
   update();
   scheduleSave();
  }
-},3000);
+},1000);
 
-if (lastDaily === new Date().toDateString()) {
+if(lastDaily===new Date().toDateString()){
  document.getElementById("dailyButton").textContent="CLAIMED";
 }
 
