@@ -164,6 +164,7 @@ input,textarea{
   <p>100 Diamonds = $1</p>
   <p>80,000 Coins = 200 Diamonds</p>
   <p>400,000 Coins = 1,000 Diamonds</p>
+  <p class="notice">Displayed values are informational only and are not redeemable for cash.</p>
   <button class="action" onclick="swapCoins()">SWAP 40,000 COINS</button>
   <p id="swapMessage" class="notice"></p>
  </div>
@@ -366,5 +367,25 @@ if(lastDaily===new Date().toDateString()){
  document.getElementById("dailyButton").textContent="CLAIMED";
 }
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "k-swap-64066.firebaseapp.com",
+  projectId: "k-swap-64066",
+  storageBucket: "k-swap-64066.firebasestorage.app",
+  messagingSenderId: "222658097368",
+  appId: "1:222658097368:web:a956e3c404a7b959b5a7ad"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+</script>
+
 </body>
 </html>
