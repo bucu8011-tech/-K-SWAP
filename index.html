@@ -6,14 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>K SWAP</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0} button, .tap-button, #tapButton {
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-body{
- background:radial-gradient(ellipse at 50% 30%,#153c25,#070b09 70%);
- color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding-bottom:85px
-}
+*{box-sizing:border-box;margin:0;padding:0}
+button,.tap-button,#tapButton{-webkit-tap-highlight-color:transparent;outline:none}
+body{background:radial-gradient(ellipse at 50% 30%,#153c25,#070b09 70%);color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding-bottom:85px}
 header{display:flex;justify-content:space-between;align-items:center;padding:20px}
 .logo{font-size:26px;font-weight:900;letter-spacing:2px;color:#a4ff42}
 .logo span{color:white}
@@ -27,47 +22,25 @@ header{display:flex;justify-content:space-between;align-items:center;padding:20p
 .heading{text-align:center;font-size:24px;margin:15px 0;color:#d5ffb1}
 .sub{text-align:center;color:#91a596;font-size:13px;margin-bottom:20px}
 .tap-area{display:flex;justify-content:center;margin:25px auto 18px}
-.tap-ring{
- width:270px;height:270px;border-radius:50%;display:flex;
- justify-content:center;align-items:center;
- background:radial-gradient(circle,#244d2e,#102718 55%,#07130b 70%);
- border:5px solid #5dba40;
- box-shadow:0 0 25px #48ff5260,0 0 60px #36b64b35,inset 0 0 25px #6aff4930;
- cursor:pointer;user-select:none;touch-action:manipulation;
- transition:transform .08s
-}
+.tap-ring{width:270px;height:270px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle,#244d2e,#102718 55%,#07130b 70%);border:5px solid #5dba40;box-shadow:0 0 25px #48ff5260,0 0 60px #36b64b35,inset 0 0 25px #6aff4930;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .08s}
 .tap-ring:active{transform:scale(.94)}
-.kmark{
- font-size:155px;font-weight:1000;font-style:italic;color:#d7ffae;
- text-shadow:2px 2px #83bd53,4px 4px #528d35,6px 6px #315d28,
- 8px 8px #183b20,0 0 25px #8aff50
-}
+.kmark{font-size:155px;font-weight:1000;font-style:italic;color:#d7ffae;text-shadow:2px 2px #83bd53,4px 4px #528d35,6px 6px #315d28,8px 8px #183b20,0 0 25px #8aff50}
 .tap-hint{text-align:center;color:#b4d3b4;font-size:13px;margin-bottom:20px}
 .energy-box{background:#17251c;border:1px solid #294a30;border-radius:15px;padding:14px}
 .energy-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:9px}
 .energy-bar{height:10px;background:#071109;border-radius:20px;overflow:hidden}
 .energy-fill{height:100%;background:linear-gradient(90deg,#62d837,#c4ff67);transition:width .2s}
 .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
-.quick button,.action{
- border:1px solid #31563a;background:#142219;color:white;
- border-radius:13px;padding:14px 5px;font-weight:700;cursor:pointer
-}
+.quick button,.action{border:1px solid #31563a;background:#142219;color:white;border-radius:13px;padding:14px 5px;font-weight:700;cursor:pointer}
 .quick button span{display:block;font-size:22px;margin-bottom:6px}
 .quick button:active,.action:active{transform:scale(.96)}
 .panel{background:#142219;border:1px solid #31563a;border-radius:17px;padding:18px;margin:12px 0}
 .panel h3{color:#caff9b;margin-bottom:12px}
 .panel p{color:#c3d0c4;font-size:14px;line-height:1.8}
 .action{width:100%;margin-top:14px;background:#79d83e;color:#071108;border:0;font-size:15px}
-input,textarea{
- width:100%;padding:13px;margin-top:10px;border-radius:10px;
- border:1px solid #3b6041;background:#09120c;color:white;font-size:15px
-}
+input,textarea{width:100%;padding:13px;margin-top:10px;border-radius:10px;border:1px solid #3b6041;background:#09120c;color:white;font-size:15px}
 .notice{font-size:12px;color:#9eafa0;text-align:center;line-height:1.6;margin-top:14px}
-.nav{
- position:fixed;bottom:0;left:0;width:100%;background:#0b120d;
- border-top:1px solid #294a30;display:grid;grid-template-columns:repeat(4,1fr);
- padding:10px 5px max(10px,env(safe-area-inset-bottom));z-index:5
-}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:#0b120d;border-top:1px solid #294a30;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 5px max(10px,env(safe-area-inset-bottom));z-index:5}
 .nav button{background:transparent;border:0;color:#9eafa0;padding:7px 2px;font-size:11px}
 .nav button.active{color:#caff8a}
 .nav span{display:block;font-size:20px;margin-bottom:4px}
@@ -83,8 +56,8 @@ input,textarea{
 </header>
 
 <div class="stats">
- <div class="stat"><small>🪙 COINS</small><strong id="coins">0</strong></div>
- <div class="stat"><small>💎 DIAMONDS</small><strong id="diamonds">0</strong></div>
+ <div class="stat"><small>COINS</small><strong id="coins">0</strong></div>
+ <div class="stat"><small>DIAMONDS</small><strong id="diamonds">0</strong></div>
 </div>
 
 <section class="page active" id="home">
@@ -96,7 +69,7 @@ input,textarea{
  <p class="tap-hint">TAP THE K TO COLLECT +1 COIN</p>
  <div class="energy-box">
   <div class="energy-top">
-   <b>⚡ ENERGY</b>
+   <b>ENERGY</b>
    <b><span id="energy">1000</span> / 1000</b>
   </div>
   <div class="energy-bar"><div class="energy-fill" id="energyFill" style="width:100%"></div></div>
@@ -142,9 +115,7 @@ input,textarea{
   <h3>Coin Collector</h3>
   <p>Collect 1,000 coins to reach your first milestone.</p>
   <p id="rewardProgress">0 / 1000 Coins</p>
-  <div class="energy-bar">
-   <div class="energy-fill" id="rewardFill" style="width:0%"></div>
-  </div>
+  <div class="energy-bar"><div class="energy-fill" id="rewardFill" style="width:0%"></div></div>
  </div>
  <div class="panel">
   <h3>Diamond Collector</h3>
@@ -155,19 +126,16 @@ input,textarea{
 <section class="page" id="withdraw">
  <h2 class="heading">WITHDRAW</h2>
  <div class="panel">
-  <p style="text-align:center">For withdrawal-related questions, please contact Support.</p>
+  <p style="text-align:center">For game-point questions, please contact Support. K-SWAP points are not cash.</p>
  </div>
 </section>
 
 <section class="page" id="swap">
  <h2 class="heading">COIN SWAP</h2>
  <div class="panel">
-  <h3>Exchange Rate</h3>
+  <h3>Game Point Exchange</h3>
   <p>40,000 Coins = 100 Diamonds</p>
-  <p>100 Diamonds = $1</p>
-  <p>80,000 Coins = 200 Diamonds</p>
-  <p>400,000 Coins = 1,000 Diamonds</p>
-  <p class="notice">Displayed values are informational only and are not redeemable for cash.</p>
+  <p>Diamonds are game points only and have no cash value.</p>
   <button class="action" onclick="swapCoins()">SWAP 40,000 COINS</button>
   <p id="swapMessage" class="notice"></p>
  </div>
@@ -188,11 +156,8 @@ input,textarea{
  <h2 class="heading">LEADERBOARD</h2>
  <div class="panel">
   <h3>Your Rank</h3>
-  <p>1. Player One — 100,000 Coins</p>
-  <p>2. Player Two — 75,000 Coins</p>
-  <p>3. Player Three — 50,000 Coins</p>
+  <p>Online rankings will be available after leaderboard setup.</p>
   <p>You — <b id="rankCoins">0</b> Coins</p>
-  <p class="notice">Online rankings will be available after backend setup.</p>
  </div>
 </section>
 
@@ -213,7 +178,7 @@ input,textarea{
   <p style="margin-top:12px">Coin Amount</p>
   <input id="sendAmount" type="number" min="1" placeholder="Enter coin amount">
   <button class="action" onclick="sendCoins()">CONTINUE</button>
-  <p id="sendMessage" class="notice">Player transfers will be enabled after account and backend setup.</p>
+  <p id="sendMessage" class="notice">Transfers are not active yet.</p>
  </div>
 </section>
 
@@ -241,6 +206,7 @@ if(!playerId){
  playerId="K"+Math.random().toString(36).slice(2,10).toUpperCase();
  localStorage.setItem("ks_player_id",playerId);
 }
+window.playerId=playerId;
 document.getElementById("playerId").textContent=playerId;
 
 function save(){
@@ -263,6 +229,7 @@ function update(){
  document.getElementById("rewardProgress").textContent=Math.min(coins,1000)+" / 1000 Coins";
  document.getElementById("rewardFill").style.width=Math.min(coins/10,100)+"%";
  save();
+ window.dispatchEvent(new Event("kswap:statechange"));
 }
 
 document.getElementById("tapButton").addEventListener("click",()=>{
@@ -307,7 +274,7 @@ function swapCoins(){
  }
  coins-=40000;
  diamonds+=100;
- document.getElementById("swapMessage").textContent="100 diamonds added to your balance!";
+ document.getElementById("swapMessage").textContent="100 diamonds added to your game balance!";
  update();
 }
 
@@ -317,7 +284,7 @@ function sendSupport(){
   document.getElementById("supportMessage").textContent="Please write a message first.";
   return;
  }
- document.getElementById("supportMessage").textContent="Support submission will be available after backend setup.";
+ document.getElementById("supportMessage").textContent="Support submission is not connected yet.";
  document.getElementById("supportText").value="";
 }
 
@@ -354,7 +321,7 @@ function sendCoins(){
   message.textContent="You do not have enough coins.";
   return;
  }
- message.textContent="Transfers are not active yet. Connect the secure backend before sending coins.";
+ message.textContent="Transfers are not active yet. A secure backend is required.";
 }
 
 setInterval(()=>{
@@ -368,47 +335,39 @@ update();
 
 if(lastDaily===new Date().toDateString()){
  document.getElementById("dailyButton").textContent="CLAIMED";
-} window.playerId = playerId;
+}
 </script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+<script>
+let syncTimer=null;
 
-const firebaseConfig = {
-  apiKey:"AIzaSyClr0B7mDVF1lxuiKHqiGGHcrCqu3rO420",
-  authDomain: "k-swap-64066.firebaseapp.com",
-  projectId: "k-swap-64066",
-  storageBucket: "k-swap-64066.firebasestorage.app",
-  messagingSenderId: "222658097368",
-  appId: "1:222658097368:web:a956e3c404a7b959b5a7ad"
-};
+async function syncPlayerWithServer(){
+ try{
+  const response=await fetch("https://k-swap-stil.onrender.com/player",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    player_id:window.playerId,
+    coins:Number(localStorage.getItem("ks_coins")||0),
+    energy:Number(localStorage.getItem("ks_energy")||1000)
+   })
+  });
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app); async function syncPlayerWithServer() {
-  try {
-    const response = await fetch("https://k-swap-stil.onrender.com/player", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        player_id: window.playerId
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Server error: " + response.status);
-    }
-
-    const player = await response.json();
-    console.log("Player synced:", player);
-  } catch (error) {
-    console.error("Player sync failed:", error);
+  if(!response.ok){
+   throw new Error("Server error: "+response.status);
   }
+
+  const player=await response.json();
+  console.log("K-SWAP synced:",player);
+ }catch(error){
+  console.error("K-SWAP sync failed:",error);
+ }
 }
+
+window.addEventListener("kswap:statechange",()=>{
+ clearTimeout(syncTimer);
+ syncTimer=setTimeout(syncPlayerWithServer,700);
+});
 
 syncPlayerWithServer();
 </script>
