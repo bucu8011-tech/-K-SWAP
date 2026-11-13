@@ -368,7 +368,7 @@ update();
 
 if(lastDaily===new Date().toDateString()){
  document.getElementById("dailyButton").textContent="CLAIMED";
-}
+} window.playerId = playerId;
 </script>
 
 <script type="module">
@@ -387,7 +387,30 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
+const auth = getAuth(app); async function syncPlayerWithServer() {
+  try {
+    const response = await fetch("https://k-swap-stil.onrender.com/player", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        player_id: window.playerId
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Server error: " + response.status);
+    }
+
+    const player = await response.json();
+    console.log("Player synced:", player);
+  } catch (error) {
+    console.error("Player sync failed:", error);
+  }
+}
+
+syncPlayerWithServer();
 </script>
 
 </body>
