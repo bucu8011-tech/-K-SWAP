@@ -1,6 +1,10 @@
 
 import os
 import sqlite3
+import json
+import urllib.request
+import urllib.error
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -16,6 +20,9 @@ CORS(
 )
 
 DB_PATH = os.environ.get("DB_PATH", "kswap.db")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
+GAME_URL = "https://bucu8011-tech.github.io/-K-SWAP/"
 
 
 def connect_db():
@@ -33,6 +40,53 @@ def init_db():
                 energy INTEGER NOT NULL DEFAULT 1000
             )
         """)
+
+
+def telegram_api(method, data):
+    if not BOT_TOKEN:
+        return None
+
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/{method}"
+    body = json.dumps(data).encode("utf-8")
+
+    req = urllib.request.Request(
+        url,
+        data=body,
+        headers={"Content-Type": "application/json"}
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=15) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as error:
+        print("Telegram API error:", error)
+        return None
+
+
+def send_start_message(chat_id):
+    telegram_api("sendMessage", {
+        "chat_id": chat_id,
+        "text": "Welcome to K-SWAP!\nTap and collect game points.",
+        "reply_markup": {
+            "inline_keyboard": [[
+                {
+                    "text": "PLAY K-SWAP",
+                    "web_app": {"url": GAME_URL}
+                }
+            ]]
+        }
+    })
+
+
+def configure_webhook():
+    base_url = os.environ.get("RENDER_EXTERNAL_URL", "").rstrip("/")
+
+    if BOT_TOKEN and WEBHOOK_SECRET and base_url:
+        result = telegram_api("setWebhook", {
+            "url": base_url + "/telegram-webhook",
+            "secret_token": WEBHOOK_SECRET
+        })
+        print("Telegram webhook setup:", result)
 
 
 @app.route("/")
@@ -109,12 +163,37 @@ def get_player():
     return jsonify(dict(player))
 
 
+@app.route("/telegram-webhook", methods=["POST"])
+def telegram_webhook():
+    if not WEBHOOK_SECRET:
+        return jsonify({"error": "Webhook not configured"}), 503
+
+    supplied_secret = request.headers.get(
+        "X-Telegram-Bot-Api-Secret-Token", ""
+    )
+
+    if supplied_secret != WEBHOOK_SECRET:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    update = request.get_json(silent=True) or {}
+    message = update.get("message", {})
+    text = message.get("text", "")
+    chat = message.get("chat", {})
+    chat_id = chat.get("id")
+
+    if chat_id and text.startswith("/start"):
+        send_start_message(chat_id)
+
+    return jsonify({"ok": True})
+
+
 @app.route("/health")
 def health():
     return jsonify({"ok": True})
 
 
 init_db()
+configure_webhook()
 
 
 if __name__ == "__main__":
