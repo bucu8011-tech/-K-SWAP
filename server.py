@@ -1,14 +1,28 @@
+
 import os
 import sqlite3
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": "https://bucu8011-tech.github.io"
+        }
+    }
+)
+
 DB_PATH = os.environ.get("DB_PATH", "kswap.db")
+
 
 def connect_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
 
 def init_db():
     with connect_db() as conn:
@@ -20,6 +34,7 @@ def init_db():
             )
         """)
 
+
 @app.route("/")
 def home():
     return jsonify({
@@ -27,6 +42,7 @@ def home():
         "game": "K-SWAP",
         "database": "ready"
     })
+
 
 @app.route("/player", methods=["POST"])
 def get_player():
@@ -48,11 +64,14 @@ def get_player():
 
     return jsonify(dict(player))
 
+
 @app.route("/health")
 def health():
     return jsonify({"ok": True})
 
+
 init_db()
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
