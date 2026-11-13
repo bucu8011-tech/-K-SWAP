@@ -44,6 +44,25 @@ def home():
     })
 
 
+@app.route("/player", methods=["GET"])
+def read_player():
+    player_id = request.args.get("player_id", "").strip()
+
+    if not player_id or len(player_id) > 100:
+        return jsonify({"error": "Invalid player_id"}), 400
+
+    with connect_db() as conn:
+        player = conn.execute(
+            "SELECT player_id, coins, energy FROM players WHERE player_id = ?",
+            (player_id,)
+        ).fetchone()
+
+    if player is None:
+        return jsonify({"error": "Player not found"}), 404
+
+    return jsonify(dict(player))
+
+
 @app.route("/player", methods=["POST"])
 def get_player():
     data = request.get_json(silent=True) or {}
